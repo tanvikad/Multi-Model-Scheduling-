@@ -22,10 +22,12 @@ class Simulation:
         self.models.append(model)
 
     def run_model(self, model: MLModel) -> None:
-        self.global_time += self.memory_manger.load(model)
-        self.log_event(f"Load model: {model.name}")
+        load_cost = self.memory_manger.load(model)
+        self.global_time += load_cost
+        if load_cost != 0:
+            self.log_event(f"Load model: {model.name}")            
         self.global_time += model.latency
-        self.log_event(f"Run")
+        self.log_event(f"{model.name} run")
         
 
     @abstractmethod
