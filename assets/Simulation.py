@@ -1,13 +1,13 @@
 from abc import abstractmethod
 from assets.MLModel import MLModel
-from assets.MemoryManger import MemoryManger
+from assets.MemoryManger import MemoryManager
 from typing import List
 
 class Simulation:
     def __init__(self) -> None:
         self.global_time : float = 0
         self.models : List[MLModel] = []
-        self.memory_manger : MemoryManger = MemoryManger()
+        self.memory_manger : MemoryManager = MemoryManager()
         # for logging
         self.logger : List[List] = []
 
