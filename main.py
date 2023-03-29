@@ -1,4 +1,4 @@
-from assets.scheduling_algorithm.Runner import RoundRobin
+from assets.scheduling_algorithm import RoundRobin
 from assets.MLModel import MLModel
 
 model1 = MLModel("model 1", 5, 2.5, 5000)
