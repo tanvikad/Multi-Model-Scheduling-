@@ -8,8 +8,7 @@ class Simulation:
         self.global_time : float = 0
         self.models : List[MLModel] = []
         self.memory_manger : MemoryManager = MemoryManager()
-        # for logging
-        self.logger : List[List] = []
+        self.logger : List[List] = []           # for logging
 
     def __str__(self) -> str:
         model_str = [str(model) for model in self.models]
@@ -44,3 +43,12 @@ class Simulation:
             f.write(f"{event}: {time}\n")
         f.close()
 
+    def print_events(self) -> None:
+        for event, time in self.logger:
+            print(event, ":", time)
+
+    def gantt_chart(self) -> None:
+        pass 
+
+    def status() -> None:
+        pass

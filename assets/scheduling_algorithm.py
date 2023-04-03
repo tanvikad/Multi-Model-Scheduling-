@@ -1,3 +1,4 @@
+from typing import List
 from assets.Simulation import Simulation
 
 class RoundRobin(Simulation):
@@ -19,8 +20,24 @@ class RoundRobin(Simulation):
                 i = (i + 1) % num_model
                 q = 0
         
-        for line in self.logger:
-            print(line)
+        self.print_events()
 
-
+class FCFS(Simulation):
+    """
+    First Come First Serve schedule
+    """
+    def __init__(self) -> None:
+        super().__init__()
+    
+    def run(self, queue: List) -> None:
+        queue.sort(key = lambda x: x[1])
+        for model_idx, arrival_time in queue:
+            next = self.models[model_idx]
+            if self.global_time <= arrival_time:
+                self.global_time = arrival_time
+                self.run_model(next)
+            else:
+                self.run_model(next)
+        
+        self.print_events()
 
