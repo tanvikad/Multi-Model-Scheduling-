@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from assets.MLModel import MLModel
-from assets.MemoryManger import MemoryManager
+from assets.MemoryManager import MemoryManager
 from typing import List
 
 class Simulation:
