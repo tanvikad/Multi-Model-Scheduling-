@@ -1,9 +1,11 @@
 from assets.MLModel import MLModel
+from typing import List
 
 class MemoryManager:
     def __init__(self, max_memory: int = 16_000):
         self.MAX_MEMORY : float = max_memory # mb
         self.loaded : set[MLModel] = set()
+        self.last_seen : List[MLModel] = []
         self.curr_memory : float = 0
     
     def can_load(self, model: MLModel) -> bool:
@@ -12,21 +14,26 @@ class MemoryManager:
         return self.curr_memory + model.space < self.MAX_MEMORY
     
     def load(self, model: MLModel) -> float:
-        load_time = 0
+        CACHE_HIT_TIME = 0.0
+        self.most_recently_use_helper(model)
+
         if model in self.loaded:
-            return load_time
+            return CACHE_HIT_TIME
 
         while not self.can_load(model):
-            load_time += self.evict()
+            self.evict()
         
         self.loaded.add(model)
         self.curr_memory += model.space
-        load_time += model.load_time
-        return load_time
+        return model.load_time
 
-    # TODO: implement an eviction policy atm it is random
-    def evict(self) -> int:
-        eviction_time = 0
-        evicted_model = self.loaded.pop()
+    def evict(self) -> None:
+        evicted_model = self.loaded.remove(self.last_seen)
         self.curr_memory -= evicted_model.space
-        return eviction_time
+
+    def most_recently_use_helper(self, model: MLModel):
+        if model in self.last_seen:
+            self.last_seen.remove(model)
+        
+        self.last_seen.append(model)
+
