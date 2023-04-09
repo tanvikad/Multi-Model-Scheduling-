@@ -52,3 +52,7 @@ class Simulation:
 
     def status() -> None:
         pass
+
+    
+    def get_stats(schedule):
+        pass
