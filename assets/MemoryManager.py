@@ -28,7 +28,7 @@ class MemoryManager:
         return model.load_time
 
     def evict(self) -> None:
-        evicted_model = self.last_seen.pop()
+        evicted_model = self.last_seen[0]
         self.loaded.remove(evicted_model)
         self.curr_memory -= evicted_model.space
 
