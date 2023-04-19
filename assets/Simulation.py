@@ -55,6 +55,52 @@ class Simulation:
 
     def get_stats(self) -> None:
         print("The number of loads is ", str(self.get_number_loads()))
+        print("The average wait time is: ", str(self.get_average_wait_time()))
+        print("The average response time is: ", str(self.get_average_response_time()))
+    
+    
+    def get_average_response_time(self):
+        total_wait_time = 0
+        wait_times = []
+        for task_no, model_idx, arrival_time in self.schedule:
+            first_occurance_of_job = 0
+            wait_time_for_this_job = 0
+            for time, model, event, task_no2 in self.logger:
+                if(event == "Run" and task_no == task_no2):
+                    first_occurance_of_job = time
+                    break
+            
+            wait_time_for_this_job = first_occurance_of_job - arrival_time
+            wait_times += [wait_time_for_this_job]
+            total_wait_time += wait_time_for_this_job
+    
+        return (total_wait_time/len(self.schedule))
+
+
+    def get_average_wait_time(self):
+        #we will avoid the load times of own model
+        total_wait_time = 0
+        wait_time_arr = []
+        for task_no, model_idx, arrival_time in self.schedule:
+            wait_time_for_this_job = 0
+            prev_time = 0
+            for time, model, event, task_no2 in self.logger:
+                if(time == 0): continue
+                if(task_no2 == task_no):
+                    prev_time = time
+                    continue
+                if(model == model_idx and event == "Load"): 
+                    prev_time = time
+                    continue
+                wait_time_for_this_job+= (time-prev_time)
+                prev_time = time
+        
+            total_wait_time += wait_time_for_this_job
+            wait_time_arr += [wait_time_for_this_job]
+        
+        return total_wait_time/len(self.schedule)
+
+
 
     def get_number_loads(self) -> int:
         num_loads = 0
