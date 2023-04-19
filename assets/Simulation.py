@@ -2,6 +2,7 @@ from abc import abstractmethod
 from assets.MLModel import MLModel
 from assets.MemoryManager import MemoryManager
 from typing import List
+import matplotlib.pyplot as plt 
 
 class Simulation:
     def __init__(self, schedule) -> None:
@@ -25,8 +26,8 @@ class Simulation:
         load_cost = self.memory_manger.load(model)
         self.log_event(model, "Load")
         self.global_time += load_cost
-        self.global_time += model.latency
         self.log_event(model, "Run", task_no=task_no)
+        self.global_time += model.latency
         
 
     @abstractmethod
@@ -47,8 +48,65 @@ class Simulation:
         for time, model, event, task_no in self.logger:
             print(time, ":", model, ":", event, ":", task_no)
 
-    def gantt_chart(self) -> None:
-        pass 
+    def gantt_chart(self) -> None:   
+        # Declaring a figure "gnt"
+        fig, gnt = plt.subplots()
+        
+        # Setting Y-axis limits
+        gnt.set_ylim(0, 50)
+        
+        # Setting X-axis limits
+        gnt.set_xlim(0, self.logger[-1][0])
+        print("Last time is ", self.logger[-1][0])
+        
+        # Setting labels for x-axis and y-axis
+        gnt.set_xlabel('Seconds')
+        gnt.set_ylabel('Events')
+        
+        # Setting ticks on y-axis
+        gnt.set_yticks([15, 25, 35])
+        # Labelling tickes of y-axis
+        gnt.set_yticklabels(['1', '2', '3'])
+        
+        # Setting graph attribute
+        gnt.grid(True)
+        
+        # Declaring a bar in 
+
+        run_arr = []
+        done_arr = []
+        load_arr = []
+
+        prev_time = 0
+        prev_event = "Load"
+        for time, model, event, task_no in self.logger:
+            if(prev_event == "Run"):
+                run_arr += [(prev_time, (time-prev_time))]
+            elif(prev_event == "Load"):
+                load_arr += [(prev_time, (time-prev_time))]
+            elif(prev_event == "Done"):
+                done_arr += [(time, 0.5)]
+            prev_time = time
+            prev_event = event
+
+        print(run_arr)
+        print(load_arr)
+        print(done_arr)
+
+        gnt.broken_barh(run_arr, (30, 9), facecolors =('tab:orange'), label="Run")
+        
+        # Declaring multiple bars in at same level and same width
+        gnt.broken_barh(load_arr, (10, 9),
+                                facecolors ='tab:blue', label="Load")
+        
+        gnt.broken_barh(done_arr, (20, 9),
+                                        facecolors =('tab:red'), label="Done Flag"), 
+        
+        plt.legend()
+        plt.title("Gantt Chart")
+        
+        plt.savefig("gantt1.png")
+
 
     def status() -> None:
         pass
@@ -83,17 +141,21 @@ class Simulation:
         wait_time_arr = []
         for task_no, model_idx, arrival_time in self.schedule:
             wait_time_for_this_job = 0
+            prev_event = "Load"
             prev_time = 0
             for time, model, event, task_no2 in self.logger:
                 if(time == 0): continue
                 if(task_no2 == task_no):
                     prev_time = time
+                    prev_event = event
                     continue
-                if(model == model_idx and event == "Load"): 
+                if(model == model_idx and prev_event == "Load"): 
                     prev_time = time
+                    prev_event = event
                     continue
                 wait_time_for_this_job+= (time-prev_time)
                 prev_time = time
+                prev_event = event
         
             total_wait_time += wait_time_for_this_job
             wait_time_arr += [wait_time_for_this_job]

@@ -20,3 +20,4 @@ for model in [model1, model2, model3, model4]:
     sim2.add_model(model)
 sim2.run(schedule)
 sim2.get_stats()
+sim2.gantt_chart()
