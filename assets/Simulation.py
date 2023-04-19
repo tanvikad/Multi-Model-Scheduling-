@@ -2,6 +2,7 @@ from abc import abstractmethod
 from assets.MLModel import MLModel
 from assets.MemoryManager import MemoryManager
 from typing import List
+import sys
 import matplotlib.pyplot as plt 
 
 class Simulation:
@@ -22,16 +23,57 @@ class Simulation:
     def add_model(self, model: MLModel) -> None:
         self.models.append(model)
 
-    def run_model(self, model: MLModel, task_no) -> None:
+    def run_model(self, model: MLModel, task_no, time_run = None) -> None:
         load_cost = self.memory_manger.load(model)
-        self.log_event(model, "Load")
+        if load_cost != 0:
+            self.log_event(model, "Load", task_no)            
         self.global_time += load_cost
-        self.log_event(model, "Run", task_no=task_no)
-        self.global_time += model.latency
+        if time_run is None:
+            self.log_event(model, "Run", task_no)
+            self.global_time += model.latency
+        else:
+            self.log_event(model, "Run", task_no)
+            self.global_time += time_run
         
+    def run(self, run_time : float) -> None:
+        schedule = sorted(self.schedule, key = lambda x: x[2])
+        active_pool = []
+
+        print(schedule, active_pool, self.schedule)
+        while schedule != [] or active_pool != []:
+            print(active_pool, schedule)
+            # Update the active pool
+            while True:
+                if schedule == []:
+                    break
+
+                if schedule[0][2] <= self.global_time:
+                    task_time = self.models[schedule[0][1]].latency # time it takes to complete task after loading
+                    active_pool.append(schedule[0] + [task_time])
+                    schedule = schedule[1:]
+                else:
+                    break
+
+            # if there is no task to do, we will just skip to when the next task arrivals
+            if active_pool == []:
+                print("There is a space in the scheduling. We should modify the schedule", file = sys.stderr)
+                task_time = self.models[schedule[0][1]].latency
+                active_pool.append(schedule[0])
+                schedule = schedule[1:]
+                self.global_time = active_pool[0][2]
+            
+            # get the next arrival time
+            if schedule == []:
+                next_arrival_time = float('inf')
+            else:
+                next_arrival_time = schedule[0][2] - self.global_time
+            
+            self.run_next(active_pool, next_arrival_time)
+
+        self.print_events()
 
     @abstractmethod
-    def run(self, run_time : float) -> None:
+    def run_next(self, active_pool: List, next_arrival_time: float, iteration: int):
         pass
 
     # Logging information to look at event history

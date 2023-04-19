@@ -6,21 +6,20 @@ class RoundRobin(Simulation):
         super().__init__(schedule)
         self.quantum : int = quantum
 
-    def run(self, run_time: float):
-        i = 0
-        q = 0
-        num_model = len(self.models)
-        print(self.models)
-        while self.global_time < run_time:
-            next = self.models[i]
-            self.run_model(next)
-
-            q += 1
-            if q == self.quantum:
-                i = (i + 1) % num_model
-                q = 0
+    def run_next(self, active_pool: List, next_arrival_time: float):
+        next = active_pool.pop(0)
+        model, task = self.models[next[1]], next[3]
         
-        self.print_events()
+        # Find the step size of the run.
+        time_run = min(task, self.quantum)
+        self.run_model(model, next[0], time_run)
+
+        # update the job and put it back into the queue if needed
+        next[3] -= time_run
+        if next[3] > 0:
+            active_pool.append(next)
+        else:
+            self.log_event(self.models[next[1]], "Done", next[0])
 
 class FCFS(Simulation):
     """
