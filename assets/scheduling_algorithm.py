@@ -25,18 +25,39 @@ class FCFS(Simulation):
     """
     First Come First Serve schedule
     """
-    def __init__(self, schedule) -> None:
-        super().__init__(schedule)
-    
-    def run(self, queue: List) -> None:
-        queue.sort(key = lambda x: x[2])
-        for task_no, model_idx, arrival_time in queue:
-            next = self.models[model_idx]
-            if self.global_time <= arrival_time:
-                self.global_time = arrival_time
-                self.run_model(next, task_no)
-            else:
-                self.run_model(next, task_no)
-            self.log_event(self.models[model_idx], "Done", task_no=task_no)
-        self.print_events()
+    def run_next(self, active_pool: List, next_arrival_time: float):
+        next = active_pool.pop(0)
+        model, task = self.models[next[1]], next[3]
+        self.run_model(model, next[0], task)
+        self.log_event(self.models[next[1]], "Done", next[0])
 
+
+class SFS(Simulation):
+    """
+    Shortest job first
+    """
+    def run_next(self, active_pool: List, next_arrival_time: float):
+        active_pool.sort(key = lambda x: x[3])
+        next = active_pool.pop(0)
+        model, task = self.models[next[1]], next[3]
+        self.run_model(model, next[0], task)
+        self.log_event(self.models[next[1]], "Done", next[0])
+
+
+class SRTF(Simulation):
+    """
+    Shortest Remaining Time first
+    """
+    def run_next(self, active_pool: List, next_arrival_time: float):
+        active_pool.sort(key = lambda x: x[3])
+        next = active_pool.pop(0)
+        model, task = self.models[next[1]], next[3]
+
+        step = min(task, next_arrival_time)
+        self.run_model(model, next[0], step)
+
+        next[3] -= step
+        if next[3] > 0:
+            active_pool.append(next)
+        else:
+            self.log_event(self.models[next[1]], "Done", next[0])
