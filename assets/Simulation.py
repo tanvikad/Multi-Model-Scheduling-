@@ -39,9 +39,8 @@ class Simulation:
         schedule = sorted(self.schedule, key = lambda x: x[2])
         active_pool = []
 
-        print(schedule, active_pool, self.schedule)
+        print("queue: ", schedule, "\n", "active", active_pool)
         while schedule != [] or active_pool != []:
-            print(active_pool, schedule)
             # Update the active pool
             while True:
                 if schedule == []:
@@ -53,7 +52,8 @@ class Simulation:
                     schedule = schedule[1:]
                 else:
                     break
-
+            print("queue: ", schedule, "\n", "active", active_pool)
+            
             # if there is no task to do, we will just skip to when the next task arrivals
             if active_pool == []:
                 print("There is a space in the scheduling. We should modify the schedule", file = sys.stderr)
@@ -70,10 +70,8 @@ class Simulation:
             
             self.run_next(active_pool, next_arrival_time)
 
-        self.print_events()
-
     @abstractmethod
-    def run_next(self, active_pool: List, next_arrival_time: float, iteration: int):
+    def run_next(self, active_pool: List, next_arrival_time: float):
         pass
 
     # Logging information to look at event history
@@ -158,7 +156,6 @@ class Simulation:
         print("The average wait time is: ", str(self.get_average_wait_time()))
         print("The average response time is: ", str(self.get_average_response_time()))
     
-    
     def get_average_response_time(self):
         total_wait_time = 0
         wait_times = []
@@ -175,7 +172,6 @@ class Simulation:
             total_wait_time += wait_time_for_this_job
     
         return (total_wait_time/len(self.schedule))
-
 
     def get_average_wait_time(self):
         #we will avoid the load times of own model
@@ -204,11 +200,10 @@ class Simulation:
         
         return total_wait_time/len(self.schedule)
 
-
-
     def get_number_loads(self) -> int:
         num_loads = 0
         for time, model, event, task_no in self.logger:
             if(event == "Load"):
                 num_loads += 1
         return num_loads
+    
