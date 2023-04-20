@@ -58,7 +58,7 @@ class Simulation:
             if active_pool == []:
                 print("There is a space in the scheduling. We should modify the schedule", file = sys.stderr)
                 task_time = self.models[schedule[0][1]].latency
-                active_pool.append(schedule[0])
+                active_pool.append(schedule[0] + [task_time])
                 schedule = schedule[1:]
                 self.global_time = active_pool[0][2]
             
@@ -129,9 +129,9 @@ class Simulation:
             prev_time = time
             prev_event = event
 
-        print(run_arr)
-        print(load_arr)
-        print(done_arr)
+        # print(run_arr)
+        # print(load_arr)
+        # print(done_arr)
 
         gnt.broken_barh(run_arr, (30, 9), facecolors =('tab:orange'), label="Run")
         
@@ -146,7 +146,6 @@ class Simulation:
         plt.title("Gantt Chart")
         
         plt.savefig("gantt1.png")
-
 
     def status() -> None:
         pass
