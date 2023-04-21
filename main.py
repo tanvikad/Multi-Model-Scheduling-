@@ -1,5 +1,6 @@
 from assets.scheduling_algorithm import RoundRobin, FCFS, SFS, SRTF
 from assets.MLModel import MLModel
+import random
 
 model1 = MLModel("ResNet152", 0.4305839539, 4.763916254, 11586)
 model2 = MLModel("ResNet50", 0.03879141808, 2.226957321, 5474)
@@ -8,6 +9,20 @@ model4 = MLModel("VGG19", 0.03628611565, 4.252752304, 5708)
 
 SCHEDULE1 = [[0, 1, 0], [1, 0, 10], [2, 0, 20], [3, 1, 20], [4, 2, 20], [5, 3, 20]]
 SCHEDULE2 = [[0, 1, 0], [1, 0, 0], [2, 0, 0], [3, 1, 0], [4, 2, 0], [5, 3, 0]]
+
+
+def get_random_schedule(num_tasks = 10, time_period = 30):
+    schedule = []
+    models = [model1, model2, model3, model4]
+    for i in range(num_tasks):
+        random_model = random.randint(0, len(models)-1)
+        random_arrival_time = random.randint(0, time_period)
+        task = [i, random_model, random_arrival_time]
+        schedule += [task]
+    print(schedule)
+    return schedule
+
+
 QUANTUM = 2
 
 schedule = SCHEDULE2
