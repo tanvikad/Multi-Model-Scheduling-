@@ -1,4 +1,4 @@
-from assets.scheduling_algorithm import RoundRobin, FCFS, SFS, SRTF
+from assets.scheduling_algorithm import RoundRobin, FCFS, SFS, SRTF, HRRF
 from assets.MLModel import MLModel
 from assets.MemoryManager import Eviction 
 
@@ -33,12 +33,13 @@ RR_sim = RoundRobin(schedule, QUANTUM)
 FCFS_sim = FCFS(schedule)
 SFS_sim = SFS(schedule)
 SRTF_sim = SRTF(schedule,evict_policy=Eviction.MRU)
+HRRF_sim = HRRF(schedule)
 for model in [model1, model2, model3, model4]:
     for simulation in [RR_sim, FCFS_sim, SFS_sim, SRTF_sim]:
         simulation.add_model(model)
 
 # Change this line to change which model you want to run
-sim = SRTF_sim
+sim = HRRF_sim
 
 sim.run(100)
 sim.print_events()
