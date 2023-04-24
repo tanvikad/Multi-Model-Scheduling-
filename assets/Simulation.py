@@ -4,12 +4,13 @@ from assets.MemoryManager import MemoryManager
 from typing import List
 import sys
 import matplotlib.pyplot as plt 
+from MemoryManager import Eviction 
 
 class Simulation:
-    def __init__(self, schedule) -> None:
+    def __init__(self, schedule, evict_policy=Eviction.MRU) -> None:
         self.global_time : float = 0
         self.models : List[MLModel] = []
-        self.memory_manger : MemoryManager = MemoryManager()
+        self.memory_manger : MemoryManager = MemoryManager(evict_policy=evict_policy)
         self.logger : List[List] = []           # for logging
         self.schedule : List[List] = schedule
 

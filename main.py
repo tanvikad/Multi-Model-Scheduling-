@@ -1,6 +1,7 @@
 from assets.scheduling_algorithm import RoundRobin, FCFS, SFS, SRTF
 from assets.MLModel import MLModel
-import random
+from assets.MemoryManager import Eviction 
+
 
 model1 = MLModel("ResNet152", 0.4305839539, 4.763916254, 11586)
 model2 = MLModel("ResNet50", 0.03879141808, 2.226957321, 5474)
@@ -30,7 +31,7 @@ schedule = SCHEDULE2
 RR_sim = RoundRobin(schedule, QUANTUM)
 FCFS_sim = FCFS(schedule)
 SFS_sim = SFS(schedule)
-SRTF_sim = SRTF(schedule)
+SRTF_sim = SRTF(schedule,evict_policy=Eviction.MRU)
 for model in [model1, model2, model3, model4]:
     for simulation in [RR_sim, FCFS_sim, SFS_sim, SRTF_sim]:
         simulation.add_model(model)
