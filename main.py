@@ -36,7 +36,7 @@ SFS_sim = SFS(schedule)
 SRTF_sim = SRTF(schedule,evict_policy=Eviction.MRU)
 HRRF_sim = HRRF(schedule)
 for model in [model1, model2, model3, model4]:
-    for simulation in [RR_sim, FCFS_sim, SFS_sim, SRTF_sim]:
+    for simulation in [RR_sim, FCFS_sim, SFS_sim, SRTF_sim, HRRF_sim]:
         simulation.add_model(model)
 
 # Change this line to change which model you want to run
