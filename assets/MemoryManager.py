@@ -10,7 +10,7 @@ class Eviction(Enum):
 
 
 class MemoryManager:
-    def __init__(self, max_memory: int = 16_000, evict_policy= Eviction.MRU):
+    def __init__(self, max_memory: int = 6000, evict_policy= Eviction.MRU):
         self.MAX_MEMORY : float = max_memory # mb
         self.loaded : set[MLModel] = set()
         self.last_seen : List[MLModel] = []
@@ -24,14 +24,13 @@ class MemoryManager:
     
     def load(self, model: MLModel) -> float:
         CACHE_HIT_TIME = 0.0
-        self.most_recently_use_helper(model)
-
         if model in self.loaded:
             return CACHE_HIT_TIME
 
         while not self.can_load(model):
             self.evict()
-        
+
+        self.most_recently_use_helper(model)
         self.loaded.add(model)
         self.curr_memory += model.space
         return model.load_time
@@ -42,6 +41,7 @@ class MemoryManager:
         else:
             random_index = random.randint(0, len(self.last_seen)-1)
             evicted_model = self.last_seen[random_index]
+        self.loaded.remove(evicted_model)
         self.curr_memory -= evicted_model.space
 
     def most_recently_use_helper(self, model: MLModel):
