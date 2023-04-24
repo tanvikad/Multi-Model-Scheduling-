@@ -1,6 +1,7 @@
 from assets.scheduling_algorithm import RoundRobin, FCFS, SFS, SRTF
 from assets.MLModel import MLModel
 from assets.MemoryManager import Eviction 
+import random
 
 
 model1 = MLModel("ResNet152", 0.4305839539, 4.763916254, 11586)
