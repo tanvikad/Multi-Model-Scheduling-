@@ -1,8 +1,16 @@
 from assets.MLModel import MLModel
 from typing import List
+from enum import Enum
+import random
+
+class Eviction(Enum):
+    MRU = 1
+    LRU = 2
+    RAND = 3
+
 
 class MemoryManager:
-    def __init__(self, max_memory: int = 16_000):
+    def __init__(self, max_memory: int = 16_000, evict_policy= Eviction.MRU):
         self.MAX_MEMORY : float = max_memory # mb
         self.loaded : set[MLModel] = set()
         self.last_seen : List[MLModel] = []
@@ -28,8 +36,11 @@ class MemoryManager:
         return model.load_time
 
     def evict(self) -> None:
-        evicted_model = self.last_seen.pop(0)   # Remove the least recently used
-        # evicted_model = self.last_seen.pop(-1)  # Remove the most recently used
+        if (self.evict_policy == Eviction.LRU): evicted_model = self.last_seen.pop(0)   # Remove the least recently used
+        elif (self.evic_policy == Eviction.MRU): evicted_model = self.last_seen.pop(-1)  # Remove the most recently used
+        else:
+            random_index = random.randint(0, len(self.last_seen)-1)
+            evicted_model = self.last_seen[random_index]
         self.curr_memory -= evicted_model.space
 
     def most_recently_use_helper(self, model: MLModel):

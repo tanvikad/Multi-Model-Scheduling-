@@ -88,7 +88,7 @@ class Simulation:
         for time, model, event, task_no in self.logger:
             print(time, ":", model, ":", event, ":", task_no)
 
-    def gantt_chart(self) -> None:   
+    def gantt_chart(self, i=1) -> None:   
         # Declaring a figure "gnt"
         fig, gnt = plt.subplots()
         
@@ -144,8 +144,8 @@ class Simulation:
         
         plt.legend()
         plt.title("Gantt Chart")
-        
-        plt.savefig("gantt1.png")
+        name = "gantt" + str(i) + ".png"
+        plt.savefig(name)
 
     def status() -> None:
         pass
