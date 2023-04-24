@@ -15,6 +15,7 @@ class MemoryManager:
         self.loaded : set[MLModel] = set()
         self.last_seen : List[MLModel] = []
         self.curr_memory : float = 0
+        self.evict_policy = evict_policy
     
     def can_load(self, model: MLModel) -> bool:
         if model in self.loaded:
@@ -37,7 +38,7 @@ class MemoryManager:
 
     def evict(self) -> None:
         if (self.evict_policy == Eviction.LRU): evicted_model = self.last_seen.pop(0)   # Remove the least recently used
-        elif (self.evic_policy == Eviction.MRU): evicted_model = self.last_seen.pop(-1)  # Remove the most recently used
+        elif (self.evict_policy == Eviction.MRU): evicted_model = self.last_seen.pop(-1)  # Remove the most recently used
         else:
             random_index = random.randint(0, len(self.last_seen)-1)
             evicted_model = self.last_seen[random_index]

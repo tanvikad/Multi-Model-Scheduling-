@@ -4,6 +4,7 @@ from assets.MemoryManager import MemoryManager, Eviction
 from typing import List
 import sys
 import matplotlib.pyplot as plt 
+from assets.MemoryManager import Eviction 
 
 class Simulation:
     def __init__(self, schedule, evict_policy=Eviction.MRU) -> None:
