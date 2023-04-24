@@ -61,3 +61,15 @@ class SRTF(Simulation):
             active_pool.append(next)
         else:
             self.log_event(self.models[next[1]], "Done", next[0])
+
+# elements in active_pool: [task_num, model_num, arrival_time, burst_time]
+class HRRF(Simulation):
+    """
+    Highest Response Ratio (waiting time + burst time)/burst time first
+    """
+    def run_next(self, active_pool: List, next_arrival_time: float):
+        active_pool.sort(key = lambda x: (self.global_time - x[3]) / x[3], reverse=True)
+        next = active_pool.pop(0)
+        model, task = self.models[next[1]], next[3]
+        self.run_model(model, next[0], task)
+        self.log_event(self.models[next[1]], "Done", next[0])
