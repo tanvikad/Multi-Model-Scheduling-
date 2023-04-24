@@ -40,7 +40,7 @@ class Simulation:
         schedule = sorted(self.schedule, key = lambda x: x[2])
         active_pool = []
 
-        print("queue: ", schedule, "\n", "active", active_pool)
+        # print("queue: ", schedule, "\n", "active", active_pool)
         while schedule != [] or active_pool != []:
             # Update the active pool
             while True:
@@ -53,7 +53,7 @@ class Simulation:
                     schedule = schedule[1:]
                 else:
                     break
-            print("queue: ", schedule, "\n", "active", active_pool)
+            # print("queue: ", schedule, "\n", "active", active_pool)
             
             # if there is no task to do, we will just skip to when the next task arrivals
             if active_pool == []:
