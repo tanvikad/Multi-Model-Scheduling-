@@ -28,12 +28,12 @@ def get_random_schedule(num_tasks = 10, time_period = 30):
 
 QUANTUM = 2
 
-schedule = SCHEDULE2
+schedule = get_random_schedule()
 
 RR_sim = RoundRobin(schedule, QUANTUM)
 FCFS_sim = FCFS(schedule)
 SFS_sim = SFS(schedule)
-SRTF_sim = SRTF(schedule,evict_policy=Eviction.MRU)
+SRTF_sim = SRTF(schedule,evict_policy=Eviction.RAND)
 for model in [model1, model2, model3, model4]:
     for simulation in [RR_sim, FCFS_sim, SFS_sim, SRTF_sim]:
         simulation.add_model(model)

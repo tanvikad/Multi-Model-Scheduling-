@@ -106,8 +106,8 @@ class Simulation:
         
         # Setting ticks on y-axis
         gnt.set_yticks([15, 25, 35])
+        gnt.set_yticklabels(labels=["Load", "Done", "Run"])
         # Labelling tickes of y-axis
-        gnt.set_yticklabels(['1', '2', '3'])
         
         # Setting graph attribute
         gnt.grid(True)
@@ -120,11 +120,24 @@ class Simulation:
 
         prev_time = 0
         prev_event = "Load"
+
+        dict = {}
+        colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:purple', 'tab:brown', 'tab:olive', 'tab:cyan']
+        for time, model, event, task_no in self.logger:
+            if(model in dict): continue
+            dict[model] = colors[0]
+            colors.pop(0)
+
+
+        run_colors_arr = []
+        load_colors_arr = []
         for time, model, event, task_no in self.logger:
             if(prev_event == "Run"):
                 run_arr += [(prev_time, (time-prev_time))]
+                run_colors_arr += [dict[model]]
             elif(prev_event == "Load"):
                 load_arr += [(prev_time, (time-prev_time))]
+                load_colors_arr += [dict[model]]
             elif(prev_event == "Done"):
                 done_arr += [(time, 0.5)]
             prev_time = time
@@ -134,16 +147,15 @@ class Simulation:
         # print(load_arr)
         # print(done_arr)
 
-        gnt.broken_barh(run_arr, (30, 9), facecolors =('tab:orange'), label="Run")
+        gnt.broken_barh(run_arr, (30, 9), facecolors =run_colors_arr)
         
         # Declaring multiple bars in at same level and same width
         gnt.broken_barh(load_arr, (10, 9),
-                                facecolors ='tab:blue', label="Load")
+                                facecolors =load_colors_arr)
         
         gnt.broken_barh(done_arr, (20, 9),
-                                        facecolors =('tab:red'), label="Done Flag"), 
+                                        facecolors =('tab:red')), 
         
-        plt.legend()
         plt.title("Gantt Chart")
         name = "gantt" + str(i) + ".png"
         plt.savefig(name)
