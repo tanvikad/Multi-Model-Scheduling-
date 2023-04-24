@@ -1,10 +1,9 @@
 from abc import abstractmethod
 from assets.MLModel import MLModel
-from assets.MemoryManager import MemoryManager
+from assets.MemoryManager import MemoryManager, Eviction
 from typing import List
 import sys
 import matplotlib.pyplot as plt 
-from MemoryManager import Eviction 
 
 class Simulation:
     def __init__(self, schedule, evict_policy=Eviction.MRU) -> None:
