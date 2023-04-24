@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from assets.MLModel import MLModel
-from assets.MemoryManager import MemoryManager
+from assets.MemoryManager import MemoryManager, Eviction
 from typing import List
 import sys
 import matplotlib.pyplot as plt 
