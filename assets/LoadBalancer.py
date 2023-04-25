@@ -2,11 +2,12 @@ from assets.Simulation import Simulation
 from assets.scheduling_algorithm import SRTF, FCFS
 from assets.MLModel import MLModel
 from typing import List
+import random
 
 class LoadBalancer():
     def __init__(self, models, schedule) -> None:
         self.models = models
-        self.cluster_list : List[Simulation] = [FCFS([]), SRTF([])]
+        self.cluster_list : List[Simulation] = [FCFS([]), SRTF([]), SRTF([]), FCFS([])]
         for cluster in self.cluster_list:
             for m in models:
                 cluster.add_model(m)
@@ -63,4 +64,14 @@ class LoadBalancer():
             self.run_cluster(cluster_selection, next, model)
         
         self.run_to_finish()
+    
+    def run_random(self):
+        while self.schedule != []:
+            next = self.schedule.pop(0)
+            model : MLModel = self.models[next[1]]
+
+            cluster_section = random.randint(0, len(self.cluster_list) - 1)
+            self.cluster_list[cluster_section].schedule.append(next)
         
+        for clus in self.cluster_list:
+            clus.run(1)

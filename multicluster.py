@@ -12,49 +12,35 @@ model5 = MLModel("Resnet18", 0.000928401947, 1.959828854, 1508)
 
 models = [model1, model2, model3, model4]
 
-TIME = 3
-FPS = 30
-FREQUENCY = 5
-
 def get_random_schedule(num_tasks = 10, time_period = 30):
     schedule = []
     models = [model1, model2, model3, model4]
     for i in range(num_tasks):
         random_model = random.randint(0, len(models)-1)
-        random_arrival_time = random.randint(0, time_period)
+        random_arrival_time = random.uniform(0, time_period)
         task = [i, random_model, random_arrival_time]
         schedule += [task]
-    print(schedule)
     return schedule
 
-
-def get_schedule(time):
-    schedule = []
-    task = 0
-    temp = 1
-    for arrival_time in np.linspace(0, TIME, FPS * TIME + 1):
-        if temp % FREQUENCY == 0: 
-            schedule.append([task, 1, arrival_time])
-        else:
-            schedule.append([task, 0, arrival_time])
-        temp = (temp + 1) % FREQUENCY
-        task += 1
-    
-    return schedule
-
-schedule = get_random_schedule(200, 15)
+schedule = get_random_schedule(300, 15)
 server = LoadBalancer(models, schedule.copy())
 server.run_basic() 
-print("Server 1 information")
+print(len(server.cluster_list))
+print("Memory Based approach")
 for clus in server.cluster_list:
     print(clus.global_time)
-    print(clus.get_stats())
+    # print(clus.get_stats())
 
-
-schedule = get_schedule(2)
 server1 = LoadBalancer(models, schedule.copy())
 server1.run_greedy() 
-print("Server 2 information")
+print("Greedy approach")
 for clus in server1.cluster_list:
     print(clus.global_time)
-    print(clus.get_stats())
+    # print(clus.get_stats())
+
+server2 = LoadBalancer(models, schedule.copy())
+server2.run_random() 
+print("Random approach")
+for clus in server2.cluster_list:
+    print(clus.global_time)
+    # print(clus.get_stats())
