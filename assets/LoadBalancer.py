@@ -5,9 +5,13 @@ from typing import List
 import random
 
 class LoadBalancer():
-    def __init__(self, models, schedule) -> None:
+    def __init__(self, models, schedule, num_cluster = 2, cluster_type = None) -> None:
         self.models = models
-        self.cluster_list : List[Simulation] = [FCFS([]), SRTF([]), SRTF([]), FCFS([])]
+        if cluster_type == None:
+            self.cluster_list : List[Simulation] = [FCFS([]) for _ in range(num_cluster)]
+        else:
+            self.cluster_list : List[Simulation] = cluster_type
+            
         for cluster in self.cluster_list:
             for m in models:
                 cluster.add_model(m)
