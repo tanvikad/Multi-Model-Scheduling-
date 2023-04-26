@@ -1,9 +1,10 @@
 from typing import List
 from assets.Simulation import Simulation
+from assets.Simulation import Eviction
 
 class RoundRobin(Simulation):
-    def __init__(self, schedule, quantum: int) -> None:
-        super().__init__(schedule)
+    def __init__(self, schedule, quantum: int, evict_policy = Eviction.MRU) -> None:
+        super().__init__(schedule, evict_policy=evict_policy)
         self.quantum : int = quantum
 
     def run_next(self, active_pool: List, next_arrival_time: float):
