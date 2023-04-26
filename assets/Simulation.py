@@ -25,7 +25,8 @@ class Simulation:
         self.models.append(model)
 
     def run_model(self, model: MLModel, task_no, time_run = None) -> None:
-        load_cost = self.memory_manger.load(model)
+        has_evicted, load_cost = self.memory_manger.load(model)
+        if(has_evicted): self.log_event(model, "Evict", None)
         if load_cost != 0:
             self.log_event(model, "Load", task_no)            
         self.global_time += load_cost

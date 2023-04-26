@@ -25,15 +25,17 @@ class MemoryManager:
     def load(self, model: MLModel) -> float:
         CACHE_HIT_TIME = 0.0
         if model in self.loaded:
-            return CACHE_HIT_TIME
+            return False, CACHE_HIT_TIME
 
+        has_evicted = False
         while not self.can_load(model):
             self.evict()
+            has_evicted = True
 
         self.most_recently_use_helper(model)
         self.loaded.add(model)
         self.curr_memory += model.space
-        return model.load_time
+        return has_evicted, model.load_time
 
     def evict(self) -> None:
         if (self.evict_policy == Eviction.LRU): evicted_model = self.last_seen.pop(0)   # Remove the least recently used
