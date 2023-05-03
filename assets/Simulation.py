@@ -220,3 +220,5 @@ class Simulation:
                 num_loads += 1
         return num_loads
     
+    def get_time(self):
+        return self.logger[-1][0]

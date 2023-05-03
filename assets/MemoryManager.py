@@ -10,7 +10,7 @@ class Eviction(Enum):
 
 
 class MemoryManager:
-    def __init__(self, max_memory: int = 16000, evict_policy= Eviction.MRU):
+    def __init__(self, max_memory: int = 24000, evict_policy= Eviction.MRU):
         self.MAX_MEMORY : float = max_memory # mb
         self.loaded : set[MLModel] = set()
         self.last_seen : List[MLModel] = []
